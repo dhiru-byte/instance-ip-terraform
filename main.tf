@@ -2,19 +2,15 @@ locals {
   region = "us-east-1"
 }
 
-##############
-# VPC Module
-##############
-
-module "vpc" {
-  source             = "./module/vpc"
-  name               = var.name
-  cidr               = var.cidr
-  azs                = var.azs
-  private_subnets    = var.private_subnets
-  public_subnets     = var.public_subnets
-  enable_ipv6        = false
-  enable_nat_gateway = false
-  single_nat_gateway = true
-  tags               = merge(var.tags)
+module "default" {
+  source               = "./modules/launch_template_asg"
+  name                 = var.name
+  availability_zones   = var.availability_zones
+  min_size             = var.min_size
+  max_size             = var.max_size
+  desired_capacity     = var.desired_capacity
+  instance_type        = var.instance_type
+  image_id             = var.image_id
+  launch_template_name = var.launch_template_name
+  tags                 = merge(var.tags)
 }
