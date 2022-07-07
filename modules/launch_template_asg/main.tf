@@ -1,7 +1,6 @@
 
 resource "aws_launch_template" "this" {
-  name = var.launch_template_name
-  # name_prefix = var.launch_template_use_name_prefix 
+  name                                 = var.launch_template_name
   description                          = var.launch_template_description
   ebs_optimized                        = var.ebs_optimized
   image_id                             = var.image_id
