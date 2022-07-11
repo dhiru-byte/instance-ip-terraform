@@ -1,10 +1,3 @@
-
-variable "create" {
-  description = "Determines whether to create autoscaling group or not"
-  type        = bool
-  default     = true
-}
-
 variable "ignore_desired_capacity_changes" {
   description = "Determines whether the `desired_capacity` value is ignored after initial apply. See README note for more details"
   type        = bool
@@ -37,12 +30,6 @@ variable "launch_template" {
 variable "launch_template_version" {
   description = "Launch template version. Can be version number, `$Latest`, or `$Default`"
   type        = string
-  default     = null
-}
-
-variable "availability_zones" {
-  description = "A list of one or more availability zones for the group. Used for EC2-Classic and default subnets when not specified with `vpc_zone_identifier` argument. Conflicts with `vpc_zone_identifier`"
-  type        = list(string)
   default     = null
 }
 
@@ -260,6 +247,11 @@ variable "security_groups" {
   description = "A list of security group IDs to associate"
   type        = list(string)
   default     = []
+}
+
+variable "associate_public_ip_address" {
+  description = "Allocation a public IP address (required for Internet access)"
+  default     = true
 }
 
 variable "enable_monitoring" {
@@ -529,4 +521,3 @@ variable "iam_role_tags" {
   type        = map(string)
   default     = {}
 }
-

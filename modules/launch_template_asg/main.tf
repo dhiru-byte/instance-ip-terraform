@@ -1,19 +1,29 @@
-
 resource "aws_launch_template" "this" {
   name                                 = var.launch_template_name
   description                          = var.launch_template_description
   ebs_optimized                        = var.ebs_optimized
-  image_id                             = var.image_id
+  image_id                             = var.image_id #data.aws_ami.latest_service_image.id
   key_name                             = var.key_name
   user_data                            = var.user_data
   instance_type                        = var.instance_type
+  vpc_security_group_ids               = var.security_groups
   default_version                      = var.default_version
   update_default_version               = var.update_default_version
   disable_api_termination              = var.disable_api_termination
   instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   kernel_id                            = var.kernel_id
   ram_disk_id                          = var.ram_disk_id
-  tags                                 = merge(var.tags)
+  network_interfaces {
+    #checkov:skip=CKV_AWS_88:Default does not allocate public IP
+    associate_public_ip_address = var.associate_public_ip_address
+    security_groups             = var.security_groups
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+  }
+
+  tags = merge(var.tags)
 }
 
 ################################################################################
@@ -26,7 +36,6 @@ resource "aws_autoscaling_group" "this" {
     id      = aws_launch_template.this.id
     version = var.launch_template_version
   }
-  availability_zones        = var.availability_zones
   vpc_zone_identifier       = var.vpc_zone_identifier
   min_size                  = var.min_size
   max_size                  = var.max_size
