@@ -5,6 +5,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "cidr_block" {
+  description = "CIDR range"
+  default     = []
+
+}
+
 variable "vpc_id" {
   description = "VPC id where the load balancer and other resources will be deployed."
   type        = string

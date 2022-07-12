@@ -1,37 +1,56 @@
 
-# data "aws_vpc" "default" {
-#   default = true
-# }
-
 ##########################
 # Security group with name
 ##########################
-resource "aws_security_group" "this" {
-  name                   = var.name
-  description            = var.description
-  vpc_id                 = var.vpc_id
-  revoke_rules_on_delete = var.revoke_rules_on_delete
+// SG to allow SSH connections from anywhere
+
+resource "aws_security_group" "allow_ssh_pub" {
+  name        = "${var.name}-allow_ssh"
+  description = "Allow SSH inbound traffic"
+  vpc_id      = var.vpc_id
+
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    # cidr_blocks      = [aws_vpc.main.cidr_block]
-    # ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
+    description = "SSH from the internet"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    # ipv6_cidr_blocks = ["::/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(
-    {
-      "Name" = format("%s", var.name)
-    },
-    var.tags,
-  )
+  tags = {
+    Name = "${var.name}-allow_ssh_pub"
+  }
 }
+
+// SG to onlly allow SSH connections from VPC public subnets
+# resource "aws_security_group" "allow_ssh_priv" {
+#   name        = "${var.name}-allow_ssh_priv"
+#   description = "Allow SSH inbound traffic"
+#   vpc_id      = var.vpc_id
+
+#   ingress {
+#     description = "SSH only from internal VPC clients"
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = ["10.0.0.0/16"]
+#   }
+
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   tags = {
+#     Name = "${var.name}-allow_ssh_priv"
+#   }
+# }

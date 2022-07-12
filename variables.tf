@@ -1,5 +1,5 @@
 variable "name" {
-  type = string
+  type    = string
   default = "tf-dhiru-vpc"
 }
 
@@ -26,7 +26,7 @@ variable "desired_capacity" {
 variable "max_size" {
   description = "Max_size for Instance"
   type        = number
-  default     = 1
+  default     = 3
 }
 
 variable "min_size" {
@@ -41,6 +41,11 @@ variable "launch_template" {
   default     = "asg-lt"
 }
 
+variable "launch_template_name" {
+  description = "Name of launch template to be created"
+  type        = string
+  default     = "test_launch_template"
+}
 
 variable "instance_type" {
   description = "The type of instance to start"
@@ -54,11 +59,11 @@ variable "key_name" {
   default     = "tf-dhiru-vpc-key"
 }
 
-variable "launch_template_name" {
-  description = "Name of launch template to be created"
-  type        = string
-  default     = "test_launch_template"
-}
+# variable "user_data" {
+#   description = "The Base64-encoded user data to provide when launching the instance"
+#   type        = string
+#   default     = null
+# }
 
 variable "image_id" {
   description = "The AMI from which to launch the instance"
@@ -66,27 +71,59 @@ variable "image_id" {
   default     = "ami-052efd3df9dad4825"
 }
 
-
-variable "vpc_zone_identifier" {
-  description = "A list of subnet IDs to launch resources in. Subnets automatically determine which availability zones the group will reside. Conflicts with `availability_zones`"
-  type        = list(string)
-  default     = ["subnet-040ff174241e07330", "subnet-075f0312141ad949c"]
-}
-
-# variable "associate_public_ip_address" {
-#   description = "Allocation a public IP address (required for Internet access)"
-#   default     = true
-# }
-
 variable "availability_zones" {
   type        = list(any)
   description = "List of Availability Zones"
   default     = ["us-east-1a", "us-east-1b"]
 }
 
-
 variable "security_groups" {
   description = "A list of security group IDs to associate"
   type        = list(string)
-  default     = ["sg-0de0747780f7a41bd"]
+  default     = ["sg-09f7daee30b7dadf9"]
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "ID of the VPC where to create security group"
+  default     = "vpc-06f227d3e528d013e"
+}
+
+variable "vpc_zone_identifier" {
+  description = "A list of subnet IDs to launch resources in."
+  type        = list(string)
+  default     = ["subnet-0557b252f4827a6ea", "subnet-07f616b96fec42e7f"]
+}
+
+variable "cidr_block" {
+  description = "CIDR range"
+  default     = "10.0.0.0/16"
+
+}
+
+variable "alb_name" {
+  description = "The resource name and Name tag of the load balancer."
+  type        = string
+  default     = "tf-test-lb-app"
+}
+
+variable "target_zone_id" {
+  type        = string
+  description = "ID of target resource (e.g. ALB, ELB)"
+  default     = "Z35SXDOTRQ7X7K"
+
+}
+
+variable "target_dns_name" {
+  type        = string
+  description = "DNS name of target resource (e.g. ALB, ELB)"
+  default     = "tf-test-lb-app-1463010249.us-east-1.elb.amazonaws.com"
+}
+
+
+
+variable "records" {
+  description = "List of objects of DNS records"
+  type        = any
+  default     = ["tf-test-lb-app-1463010249.us-east-1.elb.amazonaws.com"]
 }

@@ -246,7 +246,7 @@ variable "user_data" {
 variable "security_groups" {
   description = "A list of security group IDs to associate"
   type        = list(string)
-  default     = []
+  default     = ["sg-09f7daee30b7dadf9"]
 }
 
 variable "associate_public_ip_address" {
@@ -521,3 +521,4 @@ variable "iam_role_tags" {
   type        = map(string)
   default     = {}
 }
+

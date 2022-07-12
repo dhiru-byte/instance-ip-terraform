@@ -13,10 +13,11 @@ resource "aws_launch_template" "this" {
   instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   kernel_id                            = var.kernel_id
   ram_disk_id                          = var.ram_disk_id
+
   network_interfaces {
     #checkov:skip=CKV_AWS_88:Default does not allocate public IP
     associate_public_ip_address = var.associate_public_ip_address
-    security_groups             = var.security_groups
+    # security_groups             = var.security_groups
   }
 
   metadata_options {
