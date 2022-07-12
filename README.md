@@ -22,9 +22,11 @@
 - Create a `route53_zone` from `route53_zone` module.
 - Create a `route53_record` from `route53_record` to point the ALB DNS Name.
 
+* Use these Command to apply terraform manifest.
+
 ```shell
-`terraform init`
-`terraform plan`
-`terraform apply`
+terraform init
+terraform plan
+terraform apply
 ```
 
