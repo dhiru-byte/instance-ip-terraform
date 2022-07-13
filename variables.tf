@@ -80,19 +80,13 @@ variable "availability_zones" {
 variable "security_groups" {
   description = "A list of security group IDs to associate"
   type        = list(string)
-  default     = ["sg-09f7daee30b7dadf9"]
-}
-
-variable "vpc_id" {
-  type        = string
-  description = "ID of the VPC where to create security group"
-  default     = "vpc-06f227d3e528d013e"
+  default     = ["sg-098e9eed4c990e8d3"]
 }
 
 variable "vpc_zone_identifier" {
   description = "A list of subnet IDs to launch resources in."
   type        = list(string)
-  default     = ["subnet-0557b252f4827a6ea", "subnet-07f616b96fec42e7f"]
+  default     = ["subnet-0c2aec6ccea255429", "subnet-01cf030e3418d1634"]
 }
 
 variable "cidr_block" {
@@ -105,25 +99,4 @@ variable "alb_name" {
   description = "The resource name and Name tag of the load balancer."
   type        = string
   default     = "tf-test-lb-app"
-}
-
-variable "target_zone_id" {
-  type        = string
-  description = "ID of target resource (e.g. ALB, ELB)"
-  default     = "Z35SXDOTRQ7X7K"
-
-}
-
-variable "target_dns_name" {
-  type        = string
-  description = "DNS name of target resource (e.g. ALB, ELB)"
-  default     = "tf-test-lb-app-1463010249.us-east-1.elb.amazonaws.com"
-}
-
-
-
-variable "records" {
-  description = "List of objects of DNS records"
-  type        = any
-  default     = ["tf-test-lb-app-1463010249.us-east-1.elb.amazonaws.com"]
 }

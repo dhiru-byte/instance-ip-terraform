@@ -9,6 +9,7 @@ data "aws_subnets" "all" {
   }
 }
 
+
 locals {
   # name   = "ex-asg-complete"
   user_data = <<-EOT
@@ -21,10 +22,6 @@ locals {
    stable"
   sudo apt-get update -y
   sudo apt-get install -y docker-ce
-  sudo useradd docker
-  sudo usermod -aG docker ubuntu
-  sudo su docker
-  echo "Hello Terraform!"
   EOT
 }
 ## Module to create VPC, 2 Public & 2 Private Subnets using CIDR ranges Passed in Child Module in Module Directory.
@@ -47,21 +44,21 @@ module "ssh-key" {
 module "web_server_sg" {
   #source = "terraform-aws-modules/security-group/aws//modules/http-80"
   # version     = "4.9.0"
-  source = "./modules/security_groups"
+  source      = "./modules/security_groups"
   name        = "web-server"
   description = "Security group for web-server with HTTP ports open within VPC"
   vpc_id      = data.aws_vpc.default.id
 
 }
 
-### Module to create a Launch Template to use with Autoscaling Group.
+# ### Module to create a Launch Template to use with Autoscaling Group.
 
 module "asg" {
   # source = "./modules/launch_template_asg" 
   source               = "terraform-aws-modules/autoscaling/aws"
   version              = "=6.5.1"
   name                 = var.name
-  vpc_zone_identifier  = var.vpc_zone_identifier
+  vpc_zone_identifier  = data.aws_subnets.all.ids
   min_size             = var.min_size
   max_size             = var.max_size
   desired_capacity     = var.desired_capacity
@@ -75,14 +72,14 @@ module "asg" {
 }
 
 
-##### Module to create a Application Loadbalancer
+# ##### Module to create a Application Loadbalancer
 
 module "alb" {
   # source             = "./modules/alb"
   source          = "terraform-aws-modules/alb/aws"
   version         = "~> 6.0"
   name            = var.alb_name
-  vpc_id          = var.vpc_id
+  vpc_id          = data.aws_vpc.default.id
   subnets         = var.vpc_zone_identifier
   security_groups = var.security_groups
 
@@ -101,15 +98,6 @@ module "alb" {
     }
   ]
 
-  # https_listeners = [
-  #   {
-  #     port               = 443
-  #     protocol           = "HTTPS"
-  #     certificate_arn    = "arn:aws:iam::123456789012:server-certificate/test_cert-123456789012"
-  #     target_group_index = 0
-  #   }
-  # ]
-
   http_tcp_listeners = [
     {
       port               = 80
@@ -120,7 +108,7 @@ module "alb" {
 }
 
 
-#### Module to Create Route53 Zone
+# #### Module to Create Route53 Zone
 
 module "route53_zone" {
   source = "./modules/route53_zone"
@@ -131,9 +119,9 @@ module "route53_zone" {
 
 module "route53_record" {
   source          = "./modules/route53_record"
-  records         = var.records
-  target_zone_id  = var.target_zone_id
-  target_dns_name = var.target_dns_name
+  records         = module.alb.lb_id
+  target_zone_id  = module.alb.lb_zone_id
+  target_dns_name = module.alb.lb_dns_name
 
   depends_on = [
     module.route53_zone
