@@ -51,14 +51,14 @@ module "web_server_sg" {
 
 }
 
-# ### Module to create a Launch Template to use with Autoscaling Group.
+##### Module to create a Launch Template to use with Autoscaling Group.
 
 module "asg" {
   # source = "./modules/launch_template_asg" 
   source               = "terraform-aws-modules/autoscaling/aws"
   version              = "=6.5.1"
   name                 = var.name
-  vpc_zone_identifier  = data.aws_subnets.all.ids
+  vpc_zone_identifier  = var.vpc_zone_identifier #data.aws_subnets.all.ids
   min_size             = var.min_size
   max_size             = var.max_size
   desired_capacity     = var.desired_capacity
@@ -72,7 +72,7 @@ module "asg" {
 }
 
 
-# ##### Module to create a Application Loadbalancer
+# # ##### Module to create a Application Loadbalancer
 
 module "alb" {
   # source             = "./modules/alb"

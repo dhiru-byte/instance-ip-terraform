@@ -11,4 +11,4 @@ COPY . .
 EXPOSE  8000
 
 # Run
-CMD ["python3", "ec2-instance.py"]
+CMD ["python3", "public_ip_running_instance.py"]
